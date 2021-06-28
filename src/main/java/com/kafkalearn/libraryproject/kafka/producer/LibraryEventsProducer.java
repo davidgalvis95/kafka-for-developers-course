@@ -84,7 +84,7 @@ public class LibraryEventsProducer
     }
 
 
-    public void sendLibraryEvent_Approach2( LibraryEvent libraryEvent )
+    public ListenableFuture<SendResult<Integer, String>> sendLibraryEvent_Approach2( LibraryEvent libraryEvent )
           throws JsonProcessingException
     {
         final Integer key = libraryEvent.getLibraryEventId();
@@ -94,7 +94,7 @@ public class LibraryEventsProducer
 
         //This is another way of producing when using kafka
 //        final ListenableFuture<SendResult<Integer, String>> listenableFuture = kafkaTemplate.send( TOPIC, key, value );
-        final ListenableFuture<SendResult<Integer, String>> listenableFuture = kafkaTemplate.send( producerRecord);
+        final ListenableFuture<SendResult<Integer, String>> listenableFuture = kafkaTemplate.send( producerRecord );
 
         listenableFuture.addCallback( new ListenableFutureCallback<SendResult<Integer, String>>()
         {
@@ -111,6 +111,7 @@ public class LibraryEventsProducer
                 handleSuccess( key, value, result );
             }
         } );
+        return listenableFuture;
     }
 
 

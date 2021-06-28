@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,7 +14,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Book
 {
+    @NotNull
     private Integer bookId;
+    @NotNull
     private String bookName;
+    @NotNull
     private String bookAuthor;
 }

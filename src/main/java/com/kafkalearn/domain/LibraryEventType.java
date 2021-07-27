@@ -1,4 +1,4 @@
-package com.kafkalearn.libraryproject.domain;
+package com.kafkalearn.domain;
 
 public enum LibraryEventType
 {

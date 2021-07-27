@@ -1,8 +1,8 @@
-package com.kafkalearn.libraryproject.kafka.producer;
+package com.kafkalearn.kafka.producer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kafkalearn.libraryproject.domain.LibraryEvent;
+import com.kafkalearn.domain.LibraryEvent;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -27,7 +27,7 @@ public class LibraryEventsProducer
 
     private final ObjectMapper objectMapper;
 
-    private static final String TOPIC = "library-topic";
+    private static final String TOPIC = "library-events";
 
 
     public SendResult<Integer, String> sendLibraryEventSynchronous( LibraryEvent libraryEvent )
@@ -36,7 +36,7 @@ public class LibraryEventsProducer
         final Integer key = libraryEvent.getLibraryEventId();
         final String value = objectMapper.writeValueAsString( libraryEvent );
 
-        SendResult<Integer, String> sendResult = null;
+        SendResult<Integer, String> sendResult;
 
         try
         {

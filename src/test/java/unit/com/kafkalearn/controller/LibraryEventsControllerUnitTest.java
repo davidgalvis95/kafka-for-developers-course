@@ -1,11 +1,10 @@
-package controller;
+package com.kafkalearn.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kafkalearn.libraryproject.controller.LibraryEventsController;
-import com.kafkalearn.libraryproject.domain.Book;
-import com.kafkalearn.libraryproject.domain.LibraryEvent;
-import com.kafkalearn.libraryproject.kafka.producer.LibraryEventsProducer;
+import com.kafkalearn.controller.LibraryEventsController;
+import com.kafkalearn.domain.Book;
+import com.kafkalearn.domain.LibraryEvent;
+import com.kafkalearn.kafka.producer.LibraryEventsProducer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -65,18 +63,15 @@ public class LibraryEventsControllerUnitTest
           throws Exception
     {
         final Book book = Book.builder()
-                              .bookId( null )
-                              .bookAuthor( null )
                               .bookName( "Kafka using spring boot" )
                               .build();
 
         final LibraryEvent libraryEvent = LibraryEvent.builder()
-                                                      .libraryEventId( null )
                                                       .book( book )
                                                       .build();
         final String json = objectMapper.writeValueAsString( libraryEvent );
         when( libraryEventsProducer.sendLibraryEvent_Approach2( isA( LibraryEvent.class ) ) ).thenReturn( null );
-        final String expectedErrorMessage = "book.bookAuthor - must not be blank, book.bookId - must not be null";
+        final String expectedErrorMessage = "book.bookAuthor - must not be null, book.bookId - must not be null";
 
         mockMvc.perform( post( "/v1/libraryEvent" )
                                .content( json )

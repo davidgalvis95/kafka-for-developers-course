@@ -1,4 +1,4 @@
-package com.kafkalearn.libraryproject.domain;
+package com.kafkalearn.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,8 +16,10 @@ import javax.validation.constraints.NotNull;
 public class LibraryEvent
 {
     private Integer libraryEventId;
+
     private LibraryEventType libraryEventType;
-    @NotNull
+
     @Valid
+    @NotNull
     private Book book;
 }

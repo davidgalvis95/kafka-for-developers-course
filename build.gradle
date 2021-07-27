@@ -22,17 +22,22 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.apache.kafka:kafka-streams'
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+//    implementation 'javax.validation:validation-api:2.0.1.Final'
+    testImplementation 'org.awaitility:awaitility:4.0.3'
+//    testImplementation 'org.awaitility:awaitility-proxy:4.0.3'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation ('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 }
 
 //what this is going to do is set up 2 directories separately to configure integration and unit tests
 sourceSets{
     test{
-        java.srcDirs = ['src/test/java/unit', 'src/test/java/integration' ]
+        java.srcDirs = ['src/test/java/unit', 'src/test/java/integration']
     }
 }
 

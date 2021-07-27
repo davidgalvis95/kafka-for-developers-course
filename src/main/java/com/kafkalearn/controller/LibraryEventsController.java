@@ -1,9 +1,9 @@
-package com.kafkalearn.libraryproject.controller;
+package com.kafkalearn.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.kafkalearn.libraryproject.domain.LibraryEvent;
-import com.kafkalearn.libraryproject.domain.LibraryEventType;
-import com.kafkalearn.libraryproject.kafka.producer.LibraryEventsProducer;
+import com.kafkalearn.domain.LibraryEvent;
+import com.kafkalearn.domain.LibraryEventType;
+import com.kafkalearn.kafka.producer.LibraryEventsProducer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

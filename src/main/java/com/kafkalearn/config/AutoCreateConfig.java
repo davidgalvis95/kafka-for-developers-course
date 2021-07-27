@@ -1,4 +1,4 @@
-package com.kafkalearn.libraryproject.config;
+package com.kafkalearn.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;

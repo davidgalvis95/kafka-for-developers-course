@@ -1,7 +1,8 @@
-package controller;
+package com.kafkalearn.controller;
 
-import com.kafkalearn.libraryproject.domain.Book;
-import com.kafkalearn.libraryproject.domain.LibraryEvent;
+import com.kafkalearn.domain.Book;
+import com.kafkalearn.domain.LibraryEvent;
+import com.kafkalearn.kafka.producer.LibraryEventsProducer;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
@@ -25,11 +26,13 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.TestPropertySource;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest( webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT )
@@ -43,6 +46,9 @@ public class LibraryEventsControllerIntegrationTest
 {
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private LibraryEventsProducer producer;
 
     @Autowired
     private EmbeddedKafkaBroker embeddedKafkaBroker;
@@ -63,7 +69,7 @@ public class LibraryEventsControllerIntegrationTest
 
     @Test
     //This is another way to make the test to wait what we want it to wait until the async process of the producer-consumer is complete to assert
-    @Timeout( 5 )
+//    @Timeout( 5 )
     void postLibraryEvent()
           throws InterruptedException
     {
@@ -83,14 +89,17 @@ public class LibraryEventsControllerIntegrationTest
         final HttpEntity<LibraryEvent> request = new HttpEntity<>( libraryEvent, headers );
 
         //when
-        final ResponseEntity<LibraryEvent> responseEntity = restTemplate.exchange( "v1/libraryEvent", HttpMethod.POST, request, LibraryEvent.class );
+        final ResponseEntity<LibraryEvent> responseEntity = restTemplate.exchange( "/v1/libraryEvent", HttpMethod.POST, request, LibraryEvent.class );
         //then
         assertEquals( HttpStatus.CREATED, responseEntity.getStatusCode() );
         //This is introduced due that consumer and producers and the test itself is run in different threads asynchronously
 //        Thread.sleep( 3000 );
-        final ConsumerRecord<Integer, String> consumerRecord = KafkaTestUtils.getSingleRecord( consumer, "library-events" );
-        final String value = consumerRecord.value();
-        //TODO make this to be compared against a JSON value
-        assertEquals( "", value );
+
+        final String expectedRecord = "{\"libraryEventId\":null,\"libraryEventType\":\"NEW\",\"book\":{\"bookId\":123,\"bookName\":\"Kafka using spring boot\",\"bookAuthor\":\"David\"}}";
+        await().atMost(Duration.ofSeconds(5)).untilAsserted( () -> assertEquals(expectedRecord, KafkaTestUtils.getSingleRecord(consumer, "library-events").value()));
+//        final ConsumerRecord<Integer, String> consumerRecord = KafkaTestUtils.getSingleRecord( consumer, "library-events" );
+//        final String value = consumerRecord.value();
+//        //TODO make this to be compared against a JSON value
+//        assertEquals(expectedRecord, value);
     }
 }
